@@ -1,98 +1,265 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const HERO = {
+  uri: "file:///mnt/data/fdb1a7d5-69a3-468d-87f2-834a9eb82ea1.png",
+};
 
-export default function HomeScreen() {
+export default function Dashboard() {
+  const [showMore, setShowMore] = useState(false);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.page}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}> Student Dashboard</Text>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* HERO */}
+        <View style={styles.heroCard}>
+          <Image source={HERO} style={styles.heroImage} />
+          <View style={styles.heroOverlay} />
+
+          <View style={styles.heroContent}>
+            <Text style={styles.heroTitle}>Hi, Welcome Back! 👋</Text>
+            <Text style={styles.heroSubtitle}>
+              Manage attendance, classes, notices, chat & more.
+            </Text>
+
+            <TouchableOpacity style={styles.startBtn}>
+              <Text style={styles.startText}>Get Started</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* FEED / HOME TABS (Design similarity only) */}
+        <View style={styles.tabRow}>
+          <Text style={[styles.tabText, styles.tabActive]}>Feed</Text>
+          <Text style={styles.tabText}>Home</Text>
+        </View>
+
+        {/* ACADEMICS SECTION */}
+        <Text style={styles.sectionTitle}>Academics</Text>
+        <View style={styles.academicGrid}>
+          {[
+            { title: "Homework", icon: "📘" },
+            { title: "Library", icon: "📚" },
+            { title: "E-Learning", icon: "🎓" },
+            { title: "Complain", icon: "💬" },
+            { title: "Leave", icon: "👜" },
+            { title: "Calendar", icon: "📅" },
+          ].map((item) => (
+            <TouchableOpacity key={item.title} style={styles.academicCard}>
+              <Text style={styles.academicIcon}>{item.icon}</Text>
+              <Text style={styles.academicText}>{item.title}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* SHOW MORE BUTTON */}
+        <TouchableOpacity
+          style={styles.showMoreBtn}
+          onPress={() => setShowMore(!showMore)}
+        >
+          <Text style={styles.showMoreText}>
+            {showMore ? "Show Less ▲" : "Show More ▼"}
+          </Text>
+        </TouchableOpacity>
+
+        {showMore && (
+          <View style={styles.hiddenBox}>
+            <Text style={styles.hiddenItem}>📖 Study Materials</Text>
+            <Text style={styles.hiddenItem}>🧾 Assignments</Text>
+            <Text style={styles.hiddenItem}>🧪 Lab Records</Text>
+          </View>
+        )}
+
+        {/* EXAMS & RESULTS */}
+        <Text style={styles.sectionTitle}>Exams & Results</Text>
+        <View style={styles.examBox}>
+          <Text style={styles.examTitle}>📊 Mid Term Result</Text>
+          <Text style={styles.examText}>Tap to view your grades</Text>
+        </View>
+
+        <View style={styles.examBox}>
+          <Text style={styles.examTitle}>📝 Upcoming Exams</Text>
+          <Text style={styles.examText}>3 exams scheduled this month</Text>
+        </View>
+
+        {/* NEWS & UPDATES */}
+        <View style={styles.newsHead}>
+          <Text style={styles.sectionTitle}>News & Updates</Text>
+          <Text style={styles.viewAll}>View All</Text>
+        </View>
+
+        <View style={styles.newsCard}>
+          <Text style={styles.newsTag}>Notice</Text>
+          <Text style={styles.newsTitle}>Notice Regarding School Holiday</Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  page: { flex: 1, backgroundColor: "#F8FAFF" },
+  container: { paddingBottom: 120 },
+
+  header: {
+    paddingVertical: 15,
+    backgroundColor: "#4A74E0",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  headerTitle: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "700",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+
+  heroCard: {
+    margin: 15,
+    height: 180,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  heroImage: { width: "100%", height: "100%", position: "absolute" },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.30)",
+  },
+  heroContent: { padding: 20, justifyContent: "center", height: "100%" },
+  heroTitle: { fontSize: 22, fontWeight: "800", color: "#fff" },
+  heroSubtitle: { color: "#eee", marginTop: 4 },
+  startBtn: {
+    marginTop: 12,
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignSelf: "flex-start",
+  },
+  startText: {
+    fontWeight: "700",
+    color: "#4A74E0",
+  },
+
+  tabRow: {
+    flexDirection: "row",
+    marginHorizontal: 20,
+    marginTop: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#dce1f0",
+    paddingBottom: 6,
+  },
+  tabText: {
+    marginRight: 20,
+    fontSize: 16,
+    color: "#666",
+  },
+  tabActive: {
+    color: "#4A74E0",
+    borderBottomWidth: 2,
+    borderBottomColor: "#4A74E0",
+    paddingBottom: 6,
+    fontWeight: "700",
+  },
+
+  sectionTitle: {
+    marginLeft: 20,
+    marginTop: 18,
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#333",
+  },
+
+  academicGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 10,
+  },
+
+  academicCard: {
+    width: "30%",
+    backgroundColor: "#EAF2FF",
+    marginBottom: 14,
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  academicIcon: { fontSize: 28, marginBottom: 6 },
+  academicText: { fontWeight: "600", fontSize: 13, color: "#4A74E0" },
+
+  showMoreBtn: {
+    alignSelf: "center",
+    marginTop: 6,
+    padding: 10,
+  },
+  showMoreText: {
+    color: "#4A74E0",
+    fontWeight: "700",
+  },
+
+  hiddenBox: {
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    elevation: 2,
+  },
+  hiddenItem: {
+    fontSize: 14,
+    paddingVertical: 4,
+    color: "#444",
+  },
+
+  examBox: {
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 10,
+    elevation: 2,
+  },
+  examTitle: { fontSize: 16, fontWeight: "700", color: "#4A74E0" },
+  examText: { marginTop: 4, color: "#555" },
+
+  newsHead: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  viewAll: { color: "#4A74E0", fontWeight: "700" },
+
+  newsCard: {
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    marginTop: 10,
+    padding: 15,
+    borderRadius: 12,
+    elevation: 2,
+  },
+  newsTag: {
+    color: "#4A74E0",
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+  newsTitle: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#333",
   },
 });
